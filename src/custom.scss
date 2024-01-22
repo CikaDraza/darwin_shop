@@ -1,0 +1,148 @@
+$primary: #028998;
+$secondary: #222;
+$tertiary: #DBDBDB;
+$tetra: #444;
+$light: #ffffff;
+$success: #00E599;
+$info: #0f92ff;
+$warning: #F9A602;
+$danger: #ff0000;
+$dark: #000;
+$white: #f9f9f9;
+$clean-white: #ffffff;
+
+$theme-colors: (
+  "primary":    $primary,
+  "secondary":  $secondary,
+  "success":    $success,
+  "info":       $info,
+  "warning":    $warning,
+  "danger":     $danger,
+  "light":      $light,
+  "dark":       $dark,
+);
+
+$accordion-button-active-bg: $tertiary;
+$accordion-color: $white;
+$accordion-button-active-color: $light;
+$accordion-button-active-bg: $dark;
+$accordion-button-color: $tertiary;
+$accordion-bg: $dark;
+$accordion-button-focus-box-shadow: trasparent;
+
+// Form select and input
+.form-select:focus {
+  border-color: $primary!important;
+  outline: 0;
+  box-shadow: 0 0 10rem 0.25rem transparent!important;
+}
+.form-control:focus {
+  color: $light;
+  background-color: $secondary;
+  border-color: $secondary;
+  outline: 0;
+  box-shadow: 0 0 10rem 0.25rem $white!important;
+}
+//Link
+$nav-link: $primary;
+$nav-link-hover-color: $secondary;
+
+$list-group-color: $tetra;
+$list-group-action-hover-color: $clean-white;
+
+//Nav link
+$navbar-light-color: $light;
+$navbar-light-hover-color: $secondary;
+$navbar-light-active-color: $tetra;
+//Card
+$card-border-width: 0;
+$card-border-color: transparent;
+//dropdown
+$dropdown-link-active-bg: $primary;
+$dropdown-link-hover-bg: $primary;
+$dropdown-link-hover-color: $white;
+// card
+$card-border-width: .125rem;
+$card-border-color: $tertiary;
+
+.btn.btn-primary {
+  --bs-btn-color: #f4f4f4;
+  --bs-btn-hover-color: #f4f4f4;
+  --bs-btn-hover-bg: #222;
+  --bs-btn-hover-border-color: #222;;
+  --bs-btn-focus-shadow-rgb: 214, 37, 37;
+  --bs-btn-active-color: #f9f9f9;
+  --bs-btn-active-bg: #444;
+  --bs-btn-active-border-color: #444;
+  --bs-btn-active-shadow: inset 0 3px 5px #444;
+  --bs-btn-disabled-color: #dbdbbd;
+  --bs-btn-disabled-bg: #444;
+  --bs-btn-disabled-border-color: #444;
+}
+
+.accordion {
+  margin: .5rem 0;
+}
+
+.accordion {
+  --bs-border-color: transparent!important;
+  --bs-accordion-color: #f9f9f9;
+  --bs-accordion-bg: transparent!important;
+  --bs-accordion-transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, border-radius 0.15s ease;
+  --bs-accordion-border-color: var(--bs-border-color);
+  --bs-accordion-border-width: var(--bs-border-width);
+  --bs-accordion-border-radius: var(--bs-border-radius);
+  --bs-accordion-inner-border-radius: calc(var(--bs-border-radius) - (var(--bs-border-width)));
+  --bs-accordion-btn-padding-x: 1.25rem;
+  --bs-accordion-btn-padding-y: 1rem;
+  --bs-accordion-btn-color: #222;
+  --bs-accordion-btn-bg: var(--bs-accordion-bg);
+  --bs-accordion-btn-icon: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23212529'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e);
+  --bs-accordion-btn-icon-width: 1.25rem;
+  --bs-accordion-btn-icon-transform: rotate(-180deg);
+  --bs-accordion-btn-icon-transition: transform 0.2s ease-in-out;
+  --bs-accordion-btn-active-icon: url(data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2301373d'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e);
+  --bs-accordion-btn-focus-border-color: #81c4cc;
+  --bs-accordion-btn-focus-box-shadow: var(--bs-accordion-shadow);
+  --bs-accordion-body-padding-x: 1.25rem;
+  --bs-accordion-body-padding-y: 1rem;
+  --bs-accordion-active-color: #444;
+  --bs-accordion-active-bg: transparent!important;
+  --bs-accordion-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.list-group .list-group-item {
+  border: none;
+  border-bottom: thin solid #DBDBDB;
+  border-bottom-right-radius: 0!important;
+  border-bottom-left-radius: 0!important;
+  cursor: pointer;
+}
+
+.accordion-item {
+  margin-bottom: 0.75rem;
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.accordion-header {
+  background-color: $danger;
+  .accordion-button {
+    background-color: #c90000;
+    color: #f4f4f4!important;
+  }
+}
+
+.accordion-body {
+  .form-control {
+    border-color: #dbdbdb;
+  }
+  .form-label {
+    color: #444;
+  }
+}
+
+.form-check .form-check-input {
+  border-color: #dbdbdb;
+}
+
+@import 'bootstrap/scss/bootstrap';

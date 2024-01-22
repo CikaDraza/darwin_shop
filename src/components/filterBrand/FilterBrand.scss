@@ -1,0 +1,23 @@
+@use '../../custom.scss' as *;
+
+.column_shop {
+  .accordion-item {
+    margin-bottom: 0.75rem;
+    box-shadow: 0 0 0 transparent;
+  }
+  
+  .accordion-header {
+    background-color: transparent;
+    .accordion-button {
+      background-color: transparent;
+      color: #444!important;
+    }
+  }
+}
+
+.selected-brand.list-group-item {
+  background-color: $primary;
+  color: $white;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}

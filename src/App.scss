@@ -1,0 +1,29 @@
+@import './custom.scss';
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(12deg, #FFF 14.84%, #5e5e5e 100%);
+  background-image: url('/icons/darwin_tree.svg');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+main {
+  min-height: 100vh;
+  position: relative;
+  z-index: 1;
+}
+
+.custom-container {
+  padding-left: 4%;
+  padding-right: 4%;
+}
+
+a {
+  text-decoration: none!important;
+}

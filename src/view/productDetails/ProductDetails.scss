@@ -1,0 +1,132 @@
+@use '../../custom.scss' as *;
+
+.slider-for {
+  position: relative;
+  .slick-slider {
+    position: relative;
+  }
+  .slick-list{
+    overflow: hidden;
+  }
+  .slick-track {
+    display: flex;
+  }
+  .slick-arrow {
+    position: absolute;
+    z-index: 1;
+    bottom: 0;
+    left: 0%;
+    color: transparent;
+    border: none;
+    background-color: transparent;
+    width: 5px;
+    padding: 0;
+    display: flex!important;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .slick-arrow.slick-prev::before {
+    content: '❮';
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    z-index: 2;
+    border-radius: 50%;
+    background-color: #f9f9f9;
+    color: #888;
+    border: thin solid #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .slick-arrow.slick-next {
+    left: 35px;
+  }
+  .slick-arrow.slick-next::after {
+    content: '❯';
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    z-index: 2;
+    border-radius: 50%;
+    border: thin solid #aaa;
+    background-color: #f9f9f9;
+    color: #888;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .slick-arrow:hover.slick-next::after, .slick-arrow:hover.slick-prev::before {
+    background-color: $primary;
+    border-color: $primary;
+    color: $tertiary;
+    transition: all ease .3s;
+  }
+}
+
+.slider-nav {
+  position: relative;
+  .slick-slider {
+    position: relative;
+  }
+  .slick-list{
+    overflow: hidden;
+    padding: 0 10px!important;
+  }
+  .slick-track {
+    display: flex;
+  }
+  .slick-slide.slick-cloned, .slick-slide.slick-active.slick-center.slick-current, .slick-slide.slick-active, .slick-slide {
+    width: 80px!important;
+    height: 60px!important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 1rem;
+    img {
+      width: auto!important;
+      height: 50px;
+    }
+  }
+
+  .slick-slide.slick-active.slick-current {
+    border: thin solid $primary;
+  }
+}
+
+.wishlist-btn {
+  opacity: .8;
+  .btn-text {
+    color: #0D6EFD;
+    padding-left: .5rem;
+
+  }
+  &:hover {
+    opacity: 1;
+  }
+  &:focus {
+    border: none;
+  }
+}
+
+.add-to-cart-text {
+  margin-bottom: .5rem;
+  .type {
+    font-weight: 300;
+  }
+  .price {
+    font-size: 16pt;
+    font-weight: 600;
+  }
+}
+.add-to-cart-btn {
+  padding: .5rem 3rem;
+  font-size: 12pt;
+}
+
+.nav-tabs .nav-link.active, .nav-tabs .nav-item.show .nav-link {
+  background-color: $secondary!important;
+  color: $white!important;
+}

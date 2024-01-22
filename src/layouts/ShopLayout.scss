@@ -1,0 +1,50 @@
+@use '../custom.scss' as *;
+
+.shop-layout {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+.row_shop {
+  display: flex;
+  flex-wrap: wrap;
+
+  header {
+    width: 100%;
+    border-bottom: thin solid #DBDBDB;
+    margin-bottom: 4rem;
+    .row {
+      overflow: visible;
+      .title {
+        display: flex;
+        flex: 1;
+        h2 {
+          width: 100%;
+        }
+      }
+      .column.sort, .column.view {
+        flex: 0;
+      }
+    }
+  }
+}
+
+.column_shop {
+  flex: 1;
+}
+
+aside.column_shop {
+  flex: 0 0 25%;
+}
+
+.chips {
+  background-color: $tertiary;
+  border: none;
+  border-radius: 5px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}

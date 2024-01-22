@@ -1,0 +1,14 @@
+.card {
+  min-height: 550px;
+  max-height: 550px;
+}
+.card-img-top {
+  width: auto;
+  height: 200px;
+}
+
+.card-body {
+  align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
+}

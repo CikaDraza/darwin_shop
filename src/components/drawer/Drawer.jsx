@@ -6,11 +6,27 @@ import { CartContext } from '../../utils/Store';
 import { Alert, Figure, ListGroup } from 'react-bootstrap';
 import CloseButton from 'react-bootstrap/CloseButton';
 import ActionButton from '../action_button/ActionButton';
-import { NavLink } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function OffCanvas({ name, ...props }) {
   const [show, setShow] = useState(false);
-  const { cart, removeFromCart } = useContext(CartContext)
+  const { cart, removeFromCart, user, setAlertToastMessage, setShowAlertToast } = useContext(CartContext);
+
+  let navigate = useNavigate();
+
+  const redirectUser = (path) => {
+    navigate(path);
+  }
+
+  const handleCartPage = () => {
+    if (user) {
+      redirectUser('/cart');
+    } else {
+      setAlertToastMessage('Please login first to continue shopping');
+      setShowAlertToast(true);
+      redirectUser('/');
+    }
+  }
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -70,9 +86,9 @@ function OffCanvas({ name, ...props }) {
         {
           cart?.length !== 0 &&
           <div className='mb-3 p-3'>
-            <NavLink to="/cart">
-              <ActionButton text={'CHECKOUT'} cancelBtn={false} positon={'full'} isFetchBtn={false} bgVariant={false} />
-            </NavLink>
+            <div onClick={handleCartPage}>
+              <ActionButton href={'/cart'} text={'CHECKOUT'} cancelBtn={false} positon={'full'} color={'text-light'} isFetchBtn={false} bgVariant={false} />
+            </div>
           </div>
         }
       </Offcanvas>

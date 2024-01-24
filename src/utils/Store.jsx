@@ -1,6 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react';
 import AddProductToast from '../components/toasts/AddProductToast';
 import AlertToast from '../components/toasts/AlertToast';
+import axios from 'axios';
 
 export const CartContext = createContext();
 
@@ -13,22 +14,43 @@ export const CartProvider = ({ children }) => {
     const savedCart = localStorage.getItem('cart');
     return savedCart ? JSON.parse(savedCart) : [];
   });
-  const [lastModifiedProduct, setLastModifiedProduct] = useState(null);
-
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
-
+  const [accountCart, setAccountCart] = useState([]);
   const [orders, setOrders] = useState(() => {
     const savedOrders = localStorage.getItem('orders');
     return savedOrders ? JSON.parse(savedOrders) : [];
   });
-  
+  const [user, setUser] = useState(() => {
+    const savedUser = localStorage.getItem('user');
+    return savedUser ? JSON.parse(savedUser) : {};
+  });
+  const [lastModifiedProduct, setLastModifiedProduct] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cart));
+    getAccountCart();
+  }, [cart]);
+
   useEffect(() => {
     localStorage.setItem('orders', JSON.stringify(orders));
   }, [orders]);
 
-  const addToCart = (product) => {
+  useEffect(() => {
+    localStorage.setItem('user', JSON.stringify(user));
+  }, [user]);
+
+  const getAccountCart = async() => {
+    try {
+      const { data } = await axios.get('http://localhost:5000/cart/get');
+      console.log(data);
+      setAccountCart(data);
+      setToastMessage("Product added to user account cart.");
+      setShowToast(true);
+    } catch (error) {
+      console.error('Error adding product to cart:', error);
+    }
+  }
+
+  const addToCart = async (product) => {
     const productExists = cart.some(item => item._id === product._id);
     if (productExists) {
       setAlertToastMessage("The product has already been added to the cart.");
@@ -38,6 +60,32 @@ export const CartProvider = ({ children }) => {
       setToastMessage("Product added to cart.");
       setShowToast(true);
       setLastModifiedProduct(product);
+
+      if (user) {
+        if (localStorage.getItem('cart')) {
+          const localCartItems = JSON.parse(localStorage.getItem('cart'));
+          localCartItems.forEach(async localItem => {
+            const cartItem = {
+              userId: user._id,
+              productImage: localItem.images[0].image,
+              title: localItem.title,
+              brand: localItem.brand,
+              articleCode: `${localItem.article.code}-${localItem.article.nr}-${localItem.article.series}`,
+              price: localItem.price.euro,
+            };
+            try {
+              const { data } = await axios.post('http://localhost:5000/cart/add', cartItem);
+              console.log(cartItem);
+              setToastMessage("Product added to user account cart.");
+              setShowToast(true);
+            } catch (error) {
+              console.error('Error adding product to cart:', error);
+            }
+          });
+          localStorage.removeItem('cart');
+        }
+      }
+    
     }
   };
 
@@ -74,7 +122,7 @@ export const CartProvider = ({ children }) => {
   };
 
   return (
-    <CartContext.Provider value={{ cart, orders, addToCart, removeFromCart, addToOrders }}>
+    <CartContext.Provider value={{ cart, orders, addToCart, removeFromCart, addToOrders, setUser, user, setAlertToastMessage, setShowAlertToast }}>
       {children}
       <AddProductToast showToast={showToast} toastMessage={toastMessage} setShowToast={setShowToast} product={lastModifiedProduct} />
       <AlertToast showAlertToast={showAlertToast} alertToastMessage={alertToastMessage} setShowAlertToast={setShowAlertToast} />

@@ -12,6 +12,7 @@ import ProductTabs from '../../components/product_tabs/ProductTabs';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import { CartContext } from '../../utils/Store';
+import useMediaQuery from '../../components/useMediaQuery/useMediaQuery';
 
 export default function ProductDetails() {
   const { id } = useParams();
@@ -19,6 +20,7 @@ export default function ProductDetails() {
   const [nav2, setNav2] = useState(null);
   const [product, setProduct] = useState([]);
   const { addToCart } = useContext(CartContext);
+  const match = useMediaQuery(`(max-width: 768px)`);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -86,7 +88,7 @@ export default function ProductDetails() {
       <div className='custom-container'>
         <BreadcrumbNav data={product} />
         <Row>
-          <Col xs={12} md={5}>
+          <Col className='mb-3' xs={12} md={5}>
             <Slider
             {...settings}
             asNavFor={nav2}
@@ -121,7 +123,7 @@ export default function ProductDetails() {
           </Col>
           <Col xs={12} md={7}>
             <div>
-              <div className='d-flex justify-content-between'>
+              <div className='d-flex flex-wrap justify-content-between'>
                 <h1>{product?.title}</h1>
                 <Button variant='outline' className='wishlist-btn'>
                   <Heart /> 
@@ -140,35 +142,35 @@ export default function ProductDetails() {
               </span>
             </div>
             <Col className='pt-5'>
-              <Stack direction="horizontal" gap={3}>
-                <div className="p-2 mx-auto">
+              <Stack direction={match ? "vertical" : "horizontal"} gap={3}>
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>package type</h6>
                   <p>{product?.packaging?.package_type}</p>
                 </div>
-                <div className="p-2 mx-auto">
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>package dimension</h6>
                   <p>{product?.packaging?.width}x{product?.packaging?.height}x{product?.packaging?.length}</p>
                 </div>
-                <div className="p-2 mx-auto">
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>pcs / palette</h6>
                   <p>{`${product?.packaging?.piecesPer20ft}`}</p>
                 </div>
-                <div className="p-2 mx-auto">
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>palette / container</h6>
                   <p>{`${product?.packaging?.palletsPer20ft}`}</p>
                 </div>
-                <div className="p-2 mx-auto">
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>euro / watt peak</h6>
                   <p>{`${product?.price?.euro_per_wp}`}</p>
                 </div>
               </Stack>
-              <Stack direction="horizontal" gap={3}>
-                <div className="p-2 mx-auto">
+              <Stack direction={match ? "vertical" : "horizontal"} gap={3}>
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>
                     <strong>stocks</strong>
                   </h6>
                 </div>
-                <div className="p-2 mx-auto">
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>production</h6>
                   <p>
                     {product?.stocks?.production}
@@ -176,7 +178,7 @@ export default function ProductDetails() {
                     <small>({'MOQ: '}{product?.moq?.factory})</small>
                   </p>
                 </div>
-                <div className="p-2 mx-auto">
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>factory</h6>
                   <p>
                     {product?.stocks?.factory}
@@ -184,7 +186,7 @@ export default function ProductDetails() {
                     <small>({'MOQ: '}{product?.moq?.factory})</small>
                   </p>
                 </div>
-                <div className="p-2 mx-auto">
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>floating</h6>
                   <p>
                     {`${product?.stocks?.floating}`}
@@ -192,7 +194,7 @@ export default function ProductDetails() {
                     <small>({'MOQ: '}{product?.moq?.floating})</small>
                   </p>
                 </div>
-                <div className="p-2 mx-auto">
+                <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                   <h6>eu warehouse</h6>
                   <p>
                     {`${product?.stocks?.eu}`}
@@ -202,23 +204,23 @@ export default function ProductDetails() {
                 </div>
               </Stack>
               <hr />
-              <Stack direction="horizontal" gap={3}>
-                  <div className="p-2 mx-0">
+              <Stack className={match ? 'flex-wrap' : 'flex-nowrap'} direction="horizontal" gap={3}>
+                  <div className={match ? "w-100" : "p-2 mx-0"}>
                     <h6>
                       <strong>certifications:</strong>
                     </h6>
                   </div>
                 {
                   product?.certifications?.IEC &&
-                  <div className="p-2 mx-auto">
+                  <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                     <img width={80} height={'auto'} src='/images/iec-logo-desktop.jpg' alt='iec cerificat'/>
                   </div>
                 }
                 {
                   product?.certifications?.TUV &&
                   <>
-                    <div className="vr" />
-                    <div className="p-2 mx-auto">
+                    <div className={match ? "d-none" : "vr"} />
+                    <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                       <img width={80} height={'auto'} src='/images/TÜV_Süd_logo.svg.png' alt='tuv cerificat'/>
                     </div>
                   </>
@@ -226,8 +228,8 @@ export default function ProductDetails() {
                 {
                   product?.certifications?.MCS &&
                   <>
-                    <div className="vr" />
-                    <div className="p-2 mx-auto">
+                    <div className={match ? "d-none" : "vr"} />
+                    <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                       <img width={80} height={'auto'} src='/images/MCS-Certification.webp' alt='msc cerificat'/>
                     </div>
                   </>
@@ -235,8 +237,8 @@ export default function ProductDetails() {
                 {
                   product?.certifications?.windTunnel &&
                   <>
-                    <div className="vr" />
-                    <div className="p-2 mx-auto">
+                    <div className={match ? "d-none" : "vr"} />
+                    <div className={match ? "p-2 mx-0" : "p-2 mx-auto"}>
                       <img width={80} height={'auto'} src='/images/MCS-Certification.webp' alt='msc cerificat'/>
                     </div>
                   </>
@@ -245,12 +247,12 @@ export default function ProductDetails() {
             </Col>
             <hr />
             <Stack className='pb-5' direction="horizontal" gap={1}>
-              <div className="p-2 mx-0">
+              <div className={match ? "p-0 mx-0" : "p-2 mx-0"}>
                 <h6>
                   <strong>data sheet:</strong>
                 </h6>
               </div>
-              <div className="p-2 mx-0">
+              <div className={match ? "p-0 mx-0" : "p-2 mx-0"}>
               <OverlayTrigger
                   placement="right"
                   delay={{ show: 250, hide: 400 }}
@@ -263,12 +265,12 @@ export default function ProductDetails() {
                 </Button>
               </OverlayTrigger>
               </div>
-              <div className="p-2 mx-3">
+              <div className={match ? "p-0 mx-0" : "p-2 mx-0"}>
                 <h6>
                   <strong></strong>
                 </h6>
               </div>
-                <div className="p-2 mx-0">
+                <div className={match ? "p-0 mx-0" : "p-2 mx-0"}>
                   <h6>
                     <strong>warranty:</strong>
                   </h6>

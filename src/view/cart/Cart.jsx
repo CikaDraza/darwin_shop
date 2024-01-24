@@ -2,10 +2,12 @@ import { useContext } from 'react';
 import { Alert, CloseButton, Figure, Stack, Table } from 'react-bootstrap';
 import Accordion from 'react-bootstrap/Accordion';
 import { CartContext } from '../../utils/Store';
+import useMediaQuery from '../../components/useMediaQuery/useMediaQuery';
 
 
 function Cart() {
   const { cart, removeFromCart } = useContext(CartContext);
+  const match = useMediaQuery('(max-width: 768px)');
 
   if(cart.length === 0) {
     return (
@@ -45,7 +47,7 @@ function Cart() {
                       <tr>
                         <td>{index + 1}</td>
                         <td>
-                          <Figure className='d-flex'>
+                          <Figure style={{width: match ? '200px' : 'auto'}} className='d-flex'>
                             <Figure.Image
                               width={50}
                               height="auto"
@@ -57,9 +59,21 @@ function Cart() {
                             </Figure.Caption>
                           </Figure>
                         </td>
-                        <td>{item?.brand}</td>
-                        <td>{item?.article?.code}{'-'}{item?.article?.nr}{'-'}{item?.article?.series}</td>
-                        <td>{item?.price?.euro}{' EUR'}</td>
+                        <td>
+                          <div style={{width: match ? '80px' : 'auto'}}>
+                            {item?.brand}
+                          </div>
+                        </td>
+                        <td>
+                          <div style={{width: match ? '200px' : 'auto'}}>
+                            {item?.article?.code}{'-'}{item?.article?.nr}{'-'}{item?.article?.series}
+                          </div>
+                        </td>
+                        <td>
+                          <div style={{width: match ? '100px' : 'auto'}}>
+                            {item?.price?.euro}{' EUR'}
+                          </div>
+                        </td>
                         <td>
                           <CloseButton onClick={() => removeFromCart(item._id)} className='my-auto' size="small" />
                         </td>

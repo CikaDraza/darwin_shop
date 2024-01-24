@@ -11,7 +11,7 @@ const CartLayout = () => {
     <div className="custom-container">
       <Container fluid>
         <Row>
-          <Col className='pb-5' xs={12}>
+          <Col className='pb-5 d-none d-lg-block' xs={12}>
             <CartSteper />
           </Col>
           <Col md={9}>

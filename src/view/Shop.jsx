@@ -69,10 +69,10 @@ function Shop() {
                 <div className="column title">
                   <h2>Darwin Shop</h2>
                 </div>
-                <div className="column sort">
+                <div className="column sort mb-3">
                   <SelectFilter />
                 </div>
-                <div className="column view">
+                <div className="column view d-none d-lg-block">
                   <ViewButtons />
                 </div>
               </div>
@@ -100,7 +100,7 @@ function Shop() {
                 </Col>
               </Row>
             </Container>
-            <aside className="column_shop column_shop--left">  
+            <aside className="column_shop column_shop--left d-none d-lg-block">  
               <FilterBrand brands={brands} handleBrandChange={handleBrandChange} selectedBrand={selectedBrand} setSelectedBrand={setSelectedBrand} />
             </aside>
             <div className="column_shop column_shop--right">

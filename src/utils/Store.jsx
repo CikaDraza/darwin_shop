@@ -40,7 +40,7 @@ export const CartProvider = ({ children }) => {
 
   const getAccountCart = async() => {
     try {
-      const { data } = await axios.get('http://localhost:5000/cart/get');
+      const { data } = await axios.get('https://darwin-server-351c4f98acbb.herokuapp.com/cart/get');
       console.log(data);
       setAccountCart(data);
       setToastMessage("Product added to user account cart.");
@@ -74,7 +74,7 @@ export const CartProvider = ({ children }) => {
               price: localItem.price.euro,
             };
             try {
-              const { data } = await axios.post('http://localhost:5000/cart/add', cartItem);
+              const { data } = await axios.post('https://darwin-server-351c4f98acbb.herokuapp.com/cart/add', cartItem);
               console.log(cartItem);
               setToastMessage("Product added to user account cart.");
               setShowToast(true);

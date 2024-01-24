@@ -62,7 +62,7 @@ const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
             "Content-type": "application/json"
           }
         };
-        const { data } = await axios.post('http://localhost:5000/accounts/login', formData, config);
+        const { data } = await axios.post('https://darwin-server-351c4f98acbb.herokuapp.com/accounts/login', formData, config);
         setUser(data);
         props.onHide();
         setAlertToastMessage('Successfuly loged');

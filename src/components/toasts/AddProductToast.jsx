@@ -14,7 +14,7 @@ function AddProductToast({ showToast, toastMessage, setShowToast, product }) {
                 width={50}
                 height="auto"
                 alt={product?.title}
-                src={product?.images[0].image}
+                src={product?.productImage}
               />
               <Figure.Caption className='mx-3 text-white fw-bold'>
                 {product?.title}

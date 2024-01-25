@@ -11,10 +11,9 @@ export const CartProvider = ({ children }) => {
   const [showAlertToast, setShowAlertToast] = useState(false);
   const [alertToastMessage, setAlertToastMessage] = useState("");
   const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem('cart');
-    return savedCart ? JSON.parse(savedCart) : [];
+    const savedProducts = localStorage.getItem('cart');
+    return savedProducts ? JSON.parse(savedProducts) : { items: [] };
   });
-  const [accountCart, setAccountCart] = useState([]);
   const [orders, setOrders] = useState(() => {
     const savedOrders = localStorage.getItem('orders');
     return savedOrders ? JSON.parse(savedOrders) : [];
@@ -27,8 +26,13 @@ export const CartProvider = ({ children }) => {
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
-    getAccountCart();
   }, [cart]);
+
+  useEffect(() => {
+    if (user) {
+      syncCartWithDatabase();
+    }
+  }, [user]);
 
   useEffect(() => {
     localStorage.setItem('orders', JSON.stringify(orders));
@@ -38,54 +42,63 @@ export const CartProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(user));
   }, [user]);
 
-  const getAccountCart = async() => {
-    try {
-      const { data } = await axios.get('https://darwin-server-351c4f98acbb.herokuapp.com/cart/get');
-      console.log(data);
-      setAccountCart(data);
-      setToastMessage("Product added to user account cart.");
-      setShowToast(true);
-    } catch (error) {
-      console.error('Error adding product to cart:', error);
-    }
-  }
-
   const addToCart = async (product) => {
-    const productExists = cart.some(item => item._id === product._id);
+    const itemsArray = cart.items ? cart.items : [];
+
+    const productExists = itemsArray.some(item => item.productId === product._id);
+    
+    const newItem = {
+      productId: product._id,
+      productImage: product.images[0].image,
+      title: product.title,
+      brand: product.brand,
+      articleCode: `${product.article.code}-${product.article.nr}-${product.article.series}`,
+      price: product.price.euro
+    };
+  
     if (productExists) {
-      setAlertToastMessage("The product has already been added to the cart.");
-      setShowAlertToast(true);
+      setToastMessage("The product has already been added to the cart.");
+      setShowToast(true);
+      const updatedCart = { ...cart, items: [...cart.items, newItem] };
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
     } else {
-      setCart([...cart, product]);
+      const newCartItems = cart.items ? [...cart.items, newItem] : [newItem];
+      console.log(newCartItems);
+      const updatedCart = { ...cart, items: newCartItems };
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
       setToastMessage("Product added to cart.");
       setShowToast(true);
-      setLastModifiedProduct(product);
-
-      if (user) {
-        if (localStorage.getItem('cart')) {
-          const localCartItems = JSON.parse(localStorage.getItem('cart'));
-          localCartItems.forEach(async localItem => {
-            const cartItem = {
-              userId: user._id,
-              productImage: localItem.images[0].image,
-              title: localItem.title,
-              brand: localItem.brand,
-              articleCode: `${localItem.article.code}-${localItem.article.nr}-${localItem.article.series}`,
-              price: localItem.price.euro,
-            };
-            try {
-              const { data } = await axios.post('https://darwin-server-351c4f98acbb.herokuapp.com/cart/add', cartItem);
-              console.log(cartItem);
-              setToastMessage("Product added to user account cart.");
-              setShowToast(true);
-            } catch (error) {
-              console.error('Error adding product to cart:', error);
-            }
-          });
-          localStorage.removeItem('cart');
-        }
+      setLastModifiedProduct(newItem);
+  
+      if (user?._id) {
+        syncCartWithDatabase();
+      } else {
+        localStorage.setItem('cart', JSON.stringify({ ...cart, items: [...cart.items, newItem] }));
       }
-    
+    }
+  };  
+
+  const syncCartWithDatabase = async () => {
+    const localCart = JSON.parse(localStorage.getItem('cart')) || { items: [] };
+
+    try {
+      await axios.post('https://darwin-server-351c4f98acbb.herokuapp.com/cart/add', {
+        userId: user._id,
+        items: localCart.items
+      });
+    } catch (error) {
+        console.error('Error adding product to cart:', error);
+    }
+  
+    try {
+      const { data: updatedCart } = await axios.get('https://darwin-server-351c4f98acbb.herokuapp.com/cart/get');
+      setCart(updatedCart || { items: [] });
+      console.log(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart || { items: [] }));
+    } catch (error) {
+      console.error('Error fetching updated cart:', error);
     }
   };
 
@@ -114,12 +127,24 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const removeFromCart = (productId) => {
-    setCart(cart.filter(item => item._id !== productId));
-    setOrders([]);
-    setAlertToastMessage("Product removed from cart.");
-    setShowAlertToast(true);
-  };
+  const removeFromCart = async (productId) => {
+    if (!user?._id) {
+      const updatedCartItems = cart.items.filter(item => item.productId !== productId);
+      const updatedCart = { ...cart, items: updatedCartItems };
+      setCart(updatedCart);
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+    }
+
+    if (user?._id) {
+        try {
+            await axios.delete('https://darwin-server-351c4f98acbb.herokuapp.com/cart/remove', {
+                data: { userId: user._id, productId }
+            });
+        } catch (error) {
+            console.error('Error removing product from cart:', error);
+        }
+    }
+  };  
 
   return (
     <CartContext.Provider value={{ cart, orders, addToCart, removeFromCart, addToOrders, setUser, user, setAlertToastMessage, setShowAlertToast }}>

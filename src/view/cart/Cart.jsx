@@ -9,7 +9,7 @@ function Cart() {
   const { cart, removeFromCart } = useContext(CartContext);
   const match = useMediaQuery('(max-width: 768px)');
 
-  if(cart.length === 0) {
+  if(cart[0].items.length === 0) {
     return (
       <>
         {[
@@ -26,8 +26,8 @@ function Cart() {
   return (
     <Accordion defaultActiveKey={cart.map((item, index) => index.toString())} alwaysOpen>
       {
-        cart?.map((item, index) => (
-          <Accordion.Item key={item?._id} eventKey={`${index}`}>
+        cart[0].items.map((item, index) => (
+          <Accordion.Item key={item?.productId} eventKey={`${index}`}>
             <Accordion.Header>{item?.brand}</Accordion.Header>
             <Accordion.Body className='text-dark'>
               <Stack gap={3}>
@@ -52,7 +52,7 @@ function Cart() {
                               width={50}
                               height="auto"
                               alt={item?.title}
-                              src={item?.images[0].image}
+                              src={item?.productImage}
                             />
                             <Figure.Caption className='mx-3'>
                               {item.title}
@@ -66,7 +66,7 @@ function Cart() {
                         </td>
                         <td>
                           <div style={{width: match ? '200px' : 'auto'}}>
-                            {item?.article?.code}{'-'}{item?.article?.nr}{'-'}{item?.article?.series}
+                            {item?.articleCode}
                           </div>
                         </td>
                         <td>
@@ -75,7 +75,7 @@ function Cart() {
                           </div>
                         </td>
                         <td>
-                          <CloseButton onClick={() => removeFromCart(item._id)} className='my-auto' size="small" />
+                          <CloseButton onClick={() => removeFromCart(item.productId)} className='my-auto' size="small" />
                         </td>
                       </tr>
                     </tbody>

@@ -131,7 +131,9 @@ export default function Header() {
                   <div className="p-0 mx-auto position-relative">
                     <Drawer />
                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    {cart.length > 0 ? cart.length : ''}        
+                    {
+                      cart?.items?.length ? cart?.items?.length : ''
+                    }        
                     </span>
                   </div>
                   <div className="p-0 mx-auto">
@@ -191,7 +193,9 @@ export default function Header() {
                       <div className="p-0 mx-auto position-relative">
                         <Drawer />
                         <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {cart.length > 0 ? cart.length : ''}        
+                        {
+                          cart?.items?.length ? cart?.items?.length : ''
+                        }      
                         </span>
                       </div>
                       <div className="p-0 mx-auto">

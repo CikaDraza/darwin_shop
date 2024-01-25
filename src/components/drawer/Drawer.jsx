@@ -42,7 +42,7 @@ function OffCanvas({ name, ...props }) {
         </Offcanvas.Header>
         <Offcanvas.Body>
         {
-          cart?.length === 0 &&
+          cart[0]?.items?.length === 0 &&
           <>
             {[
               'danger',
@@ -55,9 +55,9 @@ function OffCanvas({ name, ...props }) {
         }
         <ListGroup as="ol" numbered>
           {
-            cart?.map(item => (
+            cart?.items?.map(item => (
               <ListGroup.Item
-                key={item._id}
+                key={item?.productId}
                 as="li"
                 className="d-flex justify-content-between align-items-start"
               >
@@ -69,7 +69,7 @@ function OffCanvas({ name, ...props }) {
                         width={50}
                         height="auto"
                         alt={item?.title}
-                        src={item?.images[0].image}
+                        src={item?.productImage}
                       />
                       <Figure.Caption className='mx-3'>
                         {item.title}
@@ -77,7 +77,7 @@ function OffCanvas({ name, ...props }) {
                     </Figure>
                   </div>
                 </div>
-                <CloseButton onClick={() => removeFromCart(item._id)} className='my-auto' size="small" />
+                <CloseButton onClick={() => removeFromCart(item.productId)} className='my-auto' size="small" />
               </ListGroup.Item>
             ))
           }

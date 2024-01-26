@@ -23,6 +23,7 @@ export const CartProvider = ({ children }) => {
     return savedUser ? JSON.parse(savedUser) : {};
   });
   const [lastModifiedProduct, setLastModifiedProduct] = useState(null);
+  const cartItems = user?._id ? (cart[0]?.items || []) : (cart?.items || []);
 
   useEffect(() => {
     localStorage.setItem('cart', JSON.stringify(cart));
@@ -64,7 +65,6 @@ export const CartProvider = ({ children }) => {
       localStorage.setItem('cart', JSON.stringify(updatedCart));
     } else {
       const newCartItems = cart.items ? [...cart.items, newItem] : [newItem];
-      console.log(newCartItems);
       const updatedCart = { ...cart, items: newCartItems };
       setCart(updatedCart);
       localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -95,7 +95,6 @@ export const CartProvider = ({ children }) => {
     try {
       const { data: updatedCart } = await axios.get('https://darwin-server-351c4f98acbb.herokuapp.com/cart/get');
       setCart(updatedCart || { items: [] });
-      console.log(updatedCart);
       localStorage.setItem('cart', JSON.stringify(updatedCart || { items: [] }));
     } catch (error) {
       console.error('Error fetching updated cart:', error);
@@ -128,22 +127,28 @@ export const CartProvider = ({ children }) => {
   };
 
   const removeFromCart = async (productId) => {
-    if (!user?._id) {
-      const updatedCartItems = cart.items.filter(item => item.productId !== productId);
+      const updatedCartItems = cartItems?.filter(item => item.productId !== productId);
       const updatedCart = { ...cart, items: updatedCartItems };
-      setCart(updatedCart);
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-    }
 
     if (user?._id) {
-        try {
-            await axios.delete('https://darwin-server-351c4f98acbb.herokuapp.com/cart/remove', {
-                data: { userId: user._id, productId }
-            });
-        } catch (error) {
-            console.error('Error removing product from cart:', error);
+      try {
+        const removeProduct = { 
+          userId: user?._id,
+          productId
         }
+        const { data } = await axios.put('https://darwin-server-351c4f98acbb.herokuapp.com/cart/remove', removeProduct);
+        setAlertToastMessage("Cart item removed from database.");
+        syncCartWithDatabase();
+      } catch (error) {
+        console.error('Error removing product from cart:', error);
+        setAlertToastMessage("Error removing product from cart.");
+      }
+    } else {
+      localStorage.setItem('cart', JSON.stringify(updatedCart));
+      setAlertToastMessage("Cart item removed from cart.");
     }
+    setCart(updatedCart);
+    setShowAlertToast(true);
   };  
 
   return (

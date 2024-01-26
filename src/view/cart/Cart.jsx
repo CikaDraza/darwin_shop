@@ -6,10 +6,11 @@ import useMediaQuery from '../../components/useMediaQuery/useMediaQuery';
 
 
 function Cart() {
-  const { cart, removeFromCart } = useContext(CartContext);
+  const { user, cart, removeFromCart } = useContext(CartContext);
   const match = useMediaQuery('(max-width: 768px)');
+  const cartItems = user?._id ? (cart[0]?.items || []) : (cart?.items || []);
 
-  if(cart[0].items.length === 0) {
+  if(cartItems?.length === 0) {
     return (
       <>
         {[
@@ -24,9 +25,9 @@ function Cart() {
   }
 
   return (
-    <Accordion defaultActiveKey={cart.map((item, index) => index.toString())} alwaysOpen>
+    <Accordion defaultActiveKey={cartItems?.map((item, index) => index.toString())} alwaysOpen>
       {
-        cart[0].items.map((item, index) => (
+        cartItems?.map((item, index) => (
           <Accordion.Item key={item?.productId} eventKey={`${index}`}>
             <Accordion.Header>{item?.brand}</Accordion.Header>
             <Accordion.Body className='text-dark'>

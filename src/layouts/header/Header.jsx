@@ -33,6 +33,8 @@ export default function Header() {
   const match = useMediaQuery('(max-widht: 768px)');
   let navigate = useNavigate();
 
+  const cartItems = user?._id ? (cart[0]?.items || []) : (cart?.items || []);
+
   const redirectUser = (path) => {
     navigate(path);
   }
@@ -132,7 +134,7 @@ export default function Header() {
                     <Drawer />
                     <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                     {
-                      cart?.items?.length ? cart?.items?.length : ''
+                      cartItems?.length ? cartItems?.length : ''
                     }        
                     </span>
                   </div>
@@ -194,7 +196,7 @@ export default function Header() {
                         <Drawer />
                         <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         {
-                          cart?.items?.length ? cart?.items?.length : ''
+                          cartItems?.length ? cartItems?.length : ''
                         }      
                         </span>
                       </div>

@@ -29,7 +29,6 @@ export default function ProductDetails() {
         setProduct(response.data);
       } catch (error) {
         console.error('Error fetching data: ', error);
-        setLoading(false)
       }
     };
 

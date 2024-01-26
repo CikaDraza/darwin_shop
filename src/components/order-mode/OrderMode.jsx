@@ -1,12 +1,13 @@
-import { useCallback, useContext, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import { CartContext } from '../../utils/Store';
 import { Alert, Button, Col, Figure, Form, Row, Stack, Table } from 'react-bootstrap';
 import CountQuantity from '../count_quantity/CountQuantity';
 import './OrderMode.scss';
+import axios from 'axios';
 
 function OrderMode() {
-  const { cart, addToOrders } = useContext(CartContext);
+  const { user, cart, addToOrders } = useContext(CartContext);
   const [checkedModes, setCheckedModes] = useState({
     production: false,
     factory: false,
@@ -15,6 +16,26 @@ function OrderMode() {
   });
   const [productDetails, setProductDetails] = useState({});
   const [activeKey, setActiveKey] = useState("0");
+  const [products, setProducts] = useState([]);
+  const cartItems = user?._id ? (cart[0]?.items || []) : (cart?.items || []);
+  const [modeTotalPrice, setModeTotalPrice] = useState(0);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const { data } = await axios.get(`https://darwin-server-351c4f98acbb.herokuapp.com/products/`);
+        const cartProducts = cartItems.map(cart => {
+          const filteredProducts = data.filter(item => item._id === cart.productId);
+          return filteredProducts;
+        }).flat();
+        setProducts(cartProducts);
+      } catch (error) {
+        console.error('Error fetching data: ', error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleSelect = (eventKey) => {
     setActiveKey(eventKey);
@@ -87,7 +108,7 @@ function OrderMode() {
     });
   };
 
-  if(cart.length === 0) {
+  if(cartItems?.length === 0) {
     return (
       <>
         {[
@@ -102,10 +123,9 @@ function OrderMode() {
   }
 
   return (
-    <Accordion defaultActiveKey={cart?.map((item, index) => index.toString())} onSelect={handleSelect} activeKey={activeKey}>
+    <Accordion defaultActiveKey={cartItems?.map((item, index) => index.toString())} onSelect={handleSelect} activeKey={activeKey}>
       {
-        cart?.map((item, index) => {
-
+        products?.map((item, index) => {
           return (
             <Accordion.Item key={item?._id} eventKey={`${index}`}>
               <Accordion.Header>
@@ -144,7 +164,6 @@ function OrderMode() {
                       <tbody>
                         {
                           ['PRODUCTION ORDER', 'FACTORY STOCK', 'FLOATING STOCK', 'EU WAREHOUSE'].map((mode, i) => {
-                            const [modeTotalPrice, setModeTotalPrice] = useState(0);
                             
                             const modeKey = mode.split(' ')[0].toLowerCase();
                             const priceKey = `${modeKey}_price`;

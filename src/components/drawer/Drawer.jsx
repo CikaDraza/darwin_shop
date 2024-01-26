@@ -11,6 +11,7 @@ import { useNavigate } from 'react-router-dom';
 function OffCanvas({ name, ...props }) {
   const [show, setShow] = useState(false);
   const { cart, removeFromCart, user, setAlertToastMessage, setShowAlertToast } = useContext(CartContext);
+  const cartItems = user?._id ? (cart[0]?.items || []) : (cart?.items || []);
 
   let navigate = useNavigate();
 
@@ -19,7 +20,7 @@ function OffCanvas({ name, ...props }) {
   }
 
   const handleCartPage = () => {
-    if (user) {
+    if (user?._id) {
       redirectUser('/cart');
     } else {
       setAlertToastMessage('Please login first to continue shopping');
@@ -42,7 +43,7 @@ function OffCanvas({ name, ...props }) {
         </Offcanvas.Header>
         <Offcanvas.Body>
         {
-          cart[0]?.items?.length === 0 &&
+          cartItems?.length === 0 &&
           <>
             {[
               'danger',
@@ -55,7 +56,7 @@ function OffCanvas({ name, ...props }) {
         }
         <ListGroup as="ol" numbered>
           {
-            cart?.items?.map(item => (
+            cartItems?.map(item => (
               <ListGroup.Item
                 key={item?.productId}
                 as="li"
@@ -77,7 +78,7 @@ function OffCanvas({ name, ...props }) {
                     </Figure>
                   </div>
                 </div>
-                <CloseButton onClick={() => removeFromCart(item.productId)} className='my-auto' size="small" />
+                <CloseButton onClick={() => removeFromCart(item?.productId)} className='my-auto' size="small" />
               </ListGroup.Item>
             ))
           }

@@ -5,7 +5,7 @@ import { CartContext } from "../../utils/Store";
 
 
 function PaymentMethod() {
-  const { cart, orders } = useContext(CartContext);
+  const { orders } = useContext(CartContext);
 
   if(orders.length === 0) {
     return (

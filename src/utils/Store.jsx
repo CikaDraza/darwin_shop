@@ -101,30 +101,80 @@ export const CartProvider = ({ children }) => {
     }
   };
 
+  // const addToOrders = (item, mode, quantity, location, leadTime, totalPrice) => {
+  //   setToastMessage('');
+  //   setShowToast(false);
+  //   const newItem = { 
+  //     productId: item._id,
+  //     productImage: item?.images[0].image,
+  //     orderMode: mode, 
+  //     quantity, 
+  //     location,
+  //     leadTime: leadTime?.toLocaleDateString(),
+  //     price: totalPrice,
+  //     title: item?.title,
+  //     article: item?.article?.code + ' ' + item?.article?.nr + ' ' + item?.article?.series,
+  //     brand: item?.brand
+  //   };
+  
+  //   const existingOrderIndex = orders.findIndex(order => order.productId === item._id && order.orderMode === mode);
+  //   if (existingOrderIndex > -1) {
+  //     let updatedOrders = [...orders];
+  //     updatedOrders[existingOrderIndex] = newItem;
+  //     setOrders(updatedOrders);
+  //     setToastMessage(`Order mode ${mode.toUpperCase()} choosed.`);
+  //     setShowToast(true);
+  //     setLastModifiedProduct(newItem);
+  //   } else {
+  //     setOrders([...orders, newItem]);
+  //   }
+  // };
+
   const addToOrders = (item, mode, quantity, location, leadTime, totalPrice) => {
-    const newItem = { 
-      productId: item._id,
+    setToastMessage('');
+    setShowToast(false);
+
+    const orderDetails = {
       orderMode: mode, 
       quantity, 
       location,
       leadTime: leadTime?.toLocaleDateString(),
-      price: totalPrice,
-      title: item?.title,
-      article: item?.article?.code + ' ' + item?.article?.nr + ' ' + item?.article?.series,
-      brand: item?.brand
+      price: Number(totalPrice.toFixed(2)),
     };
-  
-    const existingOrderIndex = orders.findIndex(order => order.productId === item._id && order.orderMode === mode);
+
+    const existingOrderIndex = orders.findIndex(order => order.productId === item._id);
+    
     if (existingOrderIndex > -1) {
       let updatedOrders = [...orders];
-      updatedOrders[existingOrderIndex] = newItem;
+      let existingOrder = updatedOrders[existingOrderIndex];
+      
+      // Proverava da li ovaj order mode već postoji za proizvod
+      const existingOrderModeIndex = existingOrder.paymentRequest.findIndex(order => order.orderMode === mode);
+      
+      if (existingOrderModeIndex > -1) {
+        existingOrder.paymentRequest[existingOrderModeIndex] = orderDetails;
+      } else {
+        existingOrder.paymentRequest.push(orderDetails);
+      }
+
       setOrders(updatedOrders);
-      setToastMessage("Order mode choosed.");
-      setShowToast(true);
     } else {
+      const newItem = { 
+        productId: item._id,
+        productImage: item?.images[0].image,
+        paymentRequest: [orderDetails],
+        title: item?.title,
+        article: item?.article?.code + ' ' + item?.article?.nr + ' ' + item?.article?.series,
+        brand: item?.brand
+      };
+
       setOrders([...orders, newItem]);
     }
-  };
+
+    setToastMessage(`Order mode ${mode.toUpperCase()} choosed.`);
+    setShowToast(true);
+    setLastModifiedProduct(orderDetails);
+};
 
   const removeFromCart = async (productId) => {
       const updatedCartItems = cartItems?.filter(item => item.productId !== productId);

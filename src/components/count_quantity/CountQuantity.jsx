@@ -12,7 +12,6 @@ export default function CountQuantity({ min, max, onQuantityChange, availabel })
     setQuantity(prevQuantity => availabel !== undefined ? Math.max(prevQuantity - 1, min) : min);
   };
 
-  // Notify parent component of the quantity change
   React.useEffect(() => {
     onQuantityChange(quantity);
   }, [quantity]);

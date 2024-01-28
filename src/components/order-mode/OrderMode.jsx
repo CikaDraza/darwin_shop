@@ -2,12 +2,12 @@ import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import { CartContext } from '../../utils/Store';
 import { Alert, Button, Col, Figure, Form, Row, Stack, Table } from 'react-bootstrap';
-import CountQuantity from '../count_quantity/CountQuantity';
 import './OrderMode.scss';
 import axios from 'axios';
+import OrderModeTable from './OrderModeTable';
 
 function OrderMode() {
-  const { user, cart, addToOrders } = useContext(CartContext);
+  const { user, cart, addToOrders, setAlertToastMessage, setShowAlertToast } = useContext(CartContext);
   const [checkedModes, setCheckedModes] = useState({
     production: false,
     factory: false,
@@ -18,7 +18,7 @@ function OrderMode() {
   const [activeKey, setActiveKey] = useState("0");
   const [products, setProducts] = useState([]);
   const cartItems = user?._id ? (cart[0]?.items || []) : (cart?.items || []);
-  const [modeTotalPrice, setModeTotalPrice] = useState(0);
+  const [checkedModesPerProduct, setCheckedModesPerProduct] = useState({});
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -42,7 +42,7 @@ function OrderMode() {
   };
 
   const handleClose = (index) => {
-    if (index < cart.length - 1) {
+    if (index <= cart.length - 1) {
       setActiveKey(`${index + 1}`);
     }
   };
@@ -57,55 +57,52 @@ function OrderMode() {
     }));
   };
 
-  const handleQuantityChange = useCallback((productId, mode, quantity, item, setModeTotalPrice) => {
-    const modeKey = mode.split(' ')[0].toLowerCase();
-    const priceKey = `${modeKey}_price`;
-    const pricePerUnit = item.price[priceKey] || 0;
-    const totalPrice = quantity * pricePerUnit;
-    setModeTotalPrice(totalPrice)
-    updateProductDetails(productId, mode, {
-      quantity,
-      totalPrice,
-      item,
-      mode
-    });
-  });
-
-  const calculateLeadTime = (mode, location) => {
-    const currentDate = new Date();
-    let leadTimeDays;
-    if (mode === 'FLOATING STOCK' && location === 'FLOATING-STOCK-1' || location === 'FLOATING-STOCK-2' || location === 'FLOATING-STOCK-3') {
-      leadTimeDays = 5;
-    } else if (mode === 'EU WAREHOUSE' && location === 'EU-WAREHOUSE-1') {
-      leadTimeDays = 7;
-    } else if (mode === 'EU WAREHOUSE' && location === 'EU-WAREHOUSE-2') {
-      leadTimeDays = 10;
-    }
-    currentDate.setDate(currentDate.getDate() + leadTimeDays);
-  
-    return currentDate;
-  }  
-
-  const handleLocationChange = (productId, mode, location) => {
-    const leadTime = calculateLeadTime(mode, location);
-    updateProductDetails(productId, mode, {
-      ...productDetails[productId]?.[mode],
-      location,
-      leadTime: leadTime
-    });
+  const updateCheckedModes = (productId, mode, isChecked) => {
+    setCheckedModesPerProduct(prev => ({
+      ...prev,
+      [productId]: {
+        ...prev[productId],
+        [mode]: isChecked
+      }
+    }));
   };
 
   const addToOrderWithCheckedModes = (item, index) => {
+    setAlertToastMessage('');
+    setShowAlertToast(false);
     const itemDetails = productDetails[item._id] || {};
+    const checkedModes = checkedModesPerProduct[item._id] || {};
+    const isAnyModeChecked = Object.values(checkedModes).some(value => value);
+
+    if (!isAnyModeChecked) {
+        setAlertToastMessage('Please check order mode');
+        setShowAlertToast(true);
+        return;
+    }
+
+    let allRequiredSelectionsMade = true;
     Object.keys(checkedModes).forEach(mode => {
       if (checkedModes[mode]) {
-        Object.keys(itemDetails).forEach(orderMode => {
-          const { quantity, location, leadTime, totalPrice } = itemDetails[orderMode];
-          addToOrders(item, mode, quantity, location, leadTime, totalPrice);
-          handleClose(index);
-        })
+        const modeDetails = itemDetails[mode === 'production' ? `${mode.toUpperCase()} ORDER` : mode === 'factory' ? `${mode.toUpperCase()} STOCK` : mode === 'floating' ? `${mode.toUpperCase()} STOCK` : `${mode.toUpperCase()} WAREHOUSE`];
+        if (mode !== 'factory' && (mode === 'floating' || mode === 'eu') && (!modeDetails.location)) {
+          setAlertToastMessage(`Please select a location for ${mode.toUpperCase()} STOCK`);
+          setShowAlertToast(true);
+          allRequiredSelectionsMade = false;
+          return;
+        }
+        if ((mode === 'floating' || mode === 'eu') && !modeDetails.location) {
+          setAlertToastMessage(`Please select a location for ${mode.toUpperCase()} STOCK`);
+          setShowAlertToast(true);
+          allRequiredSelectionsMade = false;
+          return;
+        }
+        const { quantity, location, leadTime, totalPrice } = modeDetails;
+        addToOrders(item, mode, quantity, location, leadTime, totalPrice);
+        handleClose(index);
       }
     });
+
+    if (!allRequiredSelectionsMade) return;
   };
 
   if(cartItems?.length === 0) {
@@ -163,76 +160,24 @@ function OrderMode() {
                       </thead>
                       <tbody>
                         {
-                          ['PRODUCTION ORDER', 'FACTORY STOCK', 'FLOATING STOCK', 'EU WAREHOUSE'].map((mode, i) => {
-                            
-                            const modeKey = mode.split(' ')[0].toLowerCase();
-                            const priceKey = `${modeKey}_price`;
-                            const leadTime = productDetails[item._id]?.[mode]?.leadTime;
-                            const handleCheckChange = (mode, isChecked) => {
-                              setCheckedModes(prevModes => ({
-                                ...prevModes,
-                                [mode]: isChecked
-                              }));
-                            };
-
-                            return (
-                              <tr key={mode}>
-                                <td>{i + 1}</td>
-                                <td>
-                                  <Form>
-                                    <Form.Check
-                                      disabled={!item?.stocks[mode.split(' ')[0].toLowerCase()]}
-                                      type="checkbox"
-                                      id={`${mode}`}
-                                      label={`${mode}`}
-                                      onChange={(e) => handleCheckChange(modeKey, e.target.checked)}
-                                    />
-                                  </Form>
-                                </td>
-                                <td>{leadTime ? leadTime.toLocaleDateString() : ''}</td>
-                                <td>{item?.stocks[mode.split(' ')[0].toLowerCase()] || 'N/A'}</td>
-                                <td>{item?.moq[mode.split(' ')[0].toLowerCase()] || 'N/A'}</td>
-                                <td className='count-qty'>
-                                  <CountQuantity 
-                                    min={item.moq[mode.split(' ')[0].toLowerCase()]} 
-                                    max={item.stocks[mode.split(' ')[0].toLowerCase()]}
-                                    onQuantityChange={(quantity) => handleQuantityChange(item?._id, mode, quantity, item, setModeTotalPrice)}
-                                    availabel={item?.stocks[mode.split(' ')[0].toLowerCase()]}
-                                  />
-                                </td>
-                                <td>{item?.price[priceKey] || 'N/A'}{' EUR'}</td>
-                                <td>{`${item?.price?.euro_per_wp}`}{' EUR'}</td>
-                                <td>
-                                  {
-                                    mode === 'FLOATING STOCK' &&
-                                    <Form.Select size="small" className='fs-caption' aria-label="select-shipment" onChange={(e) => handleLocationChange(item._id, mode, e.target.value)}>
-                                      <option>select floating</option>
-                                      <option value="FLOATING-STOCK-1">FLOATING-STOCK-1</option>
-                                      <option value="FLOATING-STOCK-2">FLOATING-STOCK-2</option>
-                                      <option value="FLOATING-STOCK-3">FLOATING-STOCK-3</option>
-                                    </Form.Select>
-                                  }
-                                  {
-                                    mode === 'EU WAREHOUSE' &&
-                                    <Form.Select size="small" className='fs-caption' aria-label="select-shipment" onChange={(e) => handleLocationChange(item._id, mode, e.target.value)}>
-                                      <option>select werehouse</option>
-                                      <option value="EU-WAREHOUSE-1">EU-WAREHOUSE-1</option>
-                                      <option value="EU-WAREHOUSE-2">EU-WAREHOUSE-2</option>
-                                    </Form.Select>
-                                  }
-                                </td>
-                                <td>
-                                  {modeTotalPrice.toFixed(2)}{' EUR'}
-                                </td>
-                              </tr>
-                            )
-                          })
+                          ['PRODUCTION ORDER', 'FACTORY STOCK', 'FLOATING STOCK', 'EU WAREHOUSE'].map((mode, i) => (
+                            <OrderModeTable
+                              key={mode + i}
+                              mode={mode}
+                              item={item}
+                              productDetails={productDetails}
+                              updateProductDetails={updateProductDetails}
+                              setCheckedModes={setCheckedModes}
+                              i={i}
+                              updateCheckedModes={updateCheckedModes}
+                            />
+                          ))
                         }
                       </tbody>
                     </Table>
                     <Row>
                       <Col className='d-flex justify-content-end'>
-                        <Button onClick={() => addToOrderWithCheckedModes(item, index)} variant='danger' className='text-white rounded-0'>Choose</Button>
+                        <Button id={index} onClick={(e) => addToOrderWithCheckedModes(item, index)} variant='danger' className='text-white rounded-0'>Choose</Button>
                       </Col>
                     </Row>
                   </div>

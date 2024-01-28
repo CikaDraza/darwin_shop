@@ -1,0 +1,79 @@
+@use '../../custom.scss' as *;
+
+.payment-terms {
+  .vstack {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  }
+  .payment-method {
+    .accordion-item {
+      box-shadow: 0 0 0 transparent;
+    }
+    &__credit {
+      background-color: #f4f4f4;
+      .accordion-button {
+        color: #444!important;
+      }
+      strong {
+        color: #444;
+      }
+      .accordion-button.collapsed {
+        strong {
+          color: #f4f4f4;
+        }
+      }
+    }
+    &__methods {
+      background-color: #c90000;
+      .vr {
+        background-color: #ffffff;
+        width: 2px;
+      }
+    }
+    .form-check-label {
+      width: 100%;
+      border-radius: .25rem;
+      padding: .25rem 1rem;
+      background-color: #f4f4f4;
+      color: #444;
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+  }
+}
+.payment-method {
+  .accordion-item {
+    .accordion-item {
+      box-shadow: 0 0 0 transparent;
+    }
+    &__credit {
+      background-color: #f4f4f4;
+      .accordion-button {
+        color: #444!important;
+      }
+      strong {
+        color: #444;
+      }
+      .accordion-button.collapsed {
+        strong {
+          color: #f4f4f4;
+        }
+      }
+    }
+    &__methods {
+      background-color: #c90000;
+      .vr {
+        background-color: #ffffff;
+        width: 2px;
+      }
+    }
+    .form-check-label {
+      width: 100%;
+      border-radius: .25rem;
+      padding: .25rem 1rem;
+      background-color: #f4f4f4;
+      color: #444;
+      font-size: 1.125rem;
+      font-weight: 500;
+    }
+  }
+}

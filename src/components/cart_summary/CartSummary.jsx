@@ -3,22 +3,19 @@ import Card from 'react-bootstrap/Card';
 import ActionButton from '../action_button/ActionButton';
 import { useContext, useEffect, useState } from 'react';
 import { CartContext } from '../../utils/Store';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 function CartSummary() {
   const { orders } = useContext(CartContext);
-  const numbers = orders?.map(item => item.price)
+  const numbers = orders?.map(item => item?.paymentRequest.map(req => req.price)).flat();
   const subTotal = numbers?.reduce((a, c) => a + c, 0);
   const location = useLocation();
-  const navigate = useNavigate()
   const [currentStep, setCurrentStep] = useState(1);
 
   useEffect(() => {
     const currentPath = location.pathname;
     setCurrentStep(currentPath);
   }, [location]);
-
-
 
   return (
     <Card className='shadow border-0 d-flex'>

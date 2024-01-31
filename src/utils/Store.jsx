@@ -44,7 +44,7 @@ export const CartProvider = ({ children }) => {
   }, [user]);
 
   const addToCart = async (product) => {
-    const itemsArray = cart.items ? cart.items : [];
+    const itemsArray = cart?.items ? cart?.items : [];
 
     const productExists = itemsArray.some(item => item.productId === product._id);
     
@@ -60,11 +60,11 @@ export const CartProvider = ({ children }) => {
     if (productExists) {
       setToastMessage("The product has already been added to the cart.");
       setShowToast(true);
-      const updatedCart = { ...cart, items: [...cart.items, newItem] };
+      const updatedCart = { ...cart, items: [...cart?.items, newItem] };
       setCart(updatedCart);
       localStorage.setItem('cart', JSON.stringify(updatedCart));
     } else {
-      const newCartItems = cart.items ? [...cart.items, newItem] : [newItem];
+      const newCartItems = cart?.items ? [...cart?.items, newItem] : [newItem];
       const updatedCart = { ...cart, items: newCartItems };
       setCart(updatedCart);
       localStorage.setItem('cart', JSON.stringify(updatedCart));
@@ -75,7 +75,7 @@ export const CartProvider = ({ children }) => {
       if (user?._id) {
         syncCartWithDatabase();
       } else {
-        localStorage.setItem('cart', JSON.stringify({ ...cart, items: [...cart.items, newItem] }));
+        localStorage.setItem('cart', JSON.stringify({ ...cart, items: [...cart?.items, newItem] }));
       }
     }
   };  
@@ -100,35 +100,6 @@ export const CartProvider = ({ children }) => {
       console.error('Error fetching updated cart:', error);
     }
   };
-
-  // const addToOrders = (item, mode, quantity, location, leadTime, totalPrice) => {
-  //   setToastMessage('');
-  //   setShowToast(false);
-  //   const newItem = { 
-  //     productId: item._id,
-  //     productImage: item?.images[0].image,
-  //     orderMode: mode, 
-  //     quantity, 
-  //     location,
-  //     leadTime: leadTime?.toLocaleDateString(),
-  //     price: totalPrice,
-  //     title: item?.title,
-  //     article: item?.article?.code + ' ' + item?.article?.nr + ' ' + item?.article?.series,
-  //     brand: item?.brand
-  //   };
-  
-  //   const existingOrderIndex = orders.findIndex(order => order.productId === item._id && order.orderMode === mode);
-  //   if (existingOrderIndex > -1) {
-  //     let updatedOrders = [...orders];
-  //     updatedOrders[existingOrderIndex] = newItem;
-  //     setOrders(updatedOrders);
-  //     setToastMessage(`Order mode ${mode.toUpperCase()} choosed.`);
-  //     setShowToast(true);
-  //     setLastModifiedProduct(newItem);
-  //   } else {
-  //     setOrders([...orders, newItem]);
-  //   }
-  // };
 
   const addToOrders = (item, mode, quantity, location, leadTime, totalPrice) => {
     setToastMessage('');

@@ -6,7 +6,7 @@ import useMediaQuery from "../useMediaQuery/useMediaQuery";
 
 
 function PaymentMethod() {
-  const { orders } = useContext(CartContext);
+  const { orders, cart } = useContext(CartContext);
   const match = useMediaQuery('(max-width: 768px)');
   const [value, setValue] = useState('Your Darwin Credit line');
   const [advanceForCredit, setAdvanceForCredit] = useState([
@@ -35,6 +35,20 @@ function PaymentMethod() {
     )
   }
 
+  if(!cart) {
+    return (
+      <>
+        {[
+          'danger',
+        ].map((variant) => (
+          <Alert key={variant} variant={variant}>
+            Cart is empty, go to shop
+          </Alert>
+        ))}
+      </>
+    )
+  }
+console.log(orders, cart);
   return (
     <>
     <div className="payment-terms">

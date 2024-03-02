@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Col, Row, Table } from 'react-bootstrap';
-import { Link, useParams } from 'react-router-dom';
+import { Link, NavLink, useParams } from 'react-router-dom';
 import Slider from "react-slick";
 import './ProductDetails.scss'
 import axios from 'axios';
@@ -81,7 +81,7 @@ export default function ProductDetails() {
       download pdf document
     </Tooltip>
   );
-
+console.log(product.brand);
   return (
     <section>
       <div className='custom-container'>
@@ -293,7 +293,21 @@ export default function ProductDetails() {
                   </div>
                 }
             </Stack>
-            <ActionButton addToCart={addToCart} product={product} text={'ADD TO CART'} cancelBtn={false} positon={'right'} isFetchBtn={true} bgVariant={'primary'} />
+            <Stack direction="horizontal" gap={3}>
+              <div className="p-2 w-100">
+                <ActionButton addToCart={addToCart} product={product} text={'ADD TO CART'} cancelBtn={false} positon={'left'} isFetchBtn={true} bgVariant={'primary'} />
+              </div>
+              {
+                product?.brand === 'Ando' &&
+                <div className="p-2 w-100">
+                  <NavLink to="/google_solar_calculator">
+                    <Button variant="success">
+                      Solar Calculator
+                    </Button>
+                  </NavLink>
+                </div>
+              }
+            </Stack>            
           </Col>
         </Row>
         <section className='py-5'>

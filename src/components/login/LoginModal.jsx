@@ -12,7 +12,7 @@ function LoginComponent(props) {
   const [errors, setErrors] = useState({
     email: '',
     password: '',
-});
+  });
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
@@ -20,10 +20,8 @@ const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   const handleSubmit = async (event) => {
     event.preventDefault();
     event.stopPropagation();
-    setValidated(true);
     setValidated(false);
     setErrors({...errors, email: '', password: ''});
-    setValidated(true);
 
     try {
       const formOutput = new FormData(event.currentTarget);

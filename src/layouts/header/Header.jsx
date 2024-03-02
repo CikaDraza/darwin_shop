@@ -82,7 +82,8 @@ export default function Header() {
             </div>
             <div className='navigation'>
               <nav className="nav-links">
-                <NavLink to="/support" className="nav-link">Support</NavLink>
+                <NavLink to="/google_solar_calculator" className="nav-link">Solar Calculator</NavLink>
+                <NavLink to="/#" className="nav-link">Support</NavLink>
                 <NavLink to="/" className="nav-link">Shopping</NavLink>
               </nav>
               <div className="search-bar">

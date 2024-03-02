@@ -7,12 +7,14 @@ import Delivery from "./components/delivery_address/Delivery";
 import CartLayout from "./layouts/cart_layout/CartLayout";
 import OrderMode from "./components/order-mode/OrderMode";
 import PaymentMethod from "./components/payment_method/PaymentMethod";
+import GoogleMapContainer from "./view/google_maps/GoogleMapContainer";
 
 const route = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<ShopLayout />}>
       <Route index element={<Shop />} />
       <Route path="/product/:id" element={<ProductDetails />} />
+      <Route path="/google_solar_calculator" element={<GoogleMapContainer />} />
       <Route path="/" element={<CartLayout />}>
         <Route path="/cart" element={<Cart />} />
         <Route path="/cart/delivery-address" element={<Delivery />} />
